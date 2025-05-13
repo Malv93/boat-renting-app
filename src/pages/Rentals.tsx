@@ -11,15 +11,30 @@ import {
   addDays,
   isSameMonth,
   isSameDay,
-  isBefore,
+  isAfter,
 } from "date-fns";
 import { it } from "date-fns/locale";
 
 // Mock data: booked dates by boat
-const mockBookedDates: Record<string, string[]> = {
-  "RS Zest": ["2025-05-15", "2025-05-20", "2025-06-03", "2025-06-10"],
-  "RS Quest": ["2025-05-16", "2025-06-01", "2025-06-05", "2025-06-12"],
-  "RS CAT14": ["2025-05-18", "2025-06-08", "2025-06-15"],
+const mockBookedDates: Record<
+  string,
+  Record<string, ("morning" | "afternoon")[]>
+> = {
+  "RS Zest": {
+    "2025-05-15": ["morning", "afternoon"],
+    "2025-05-20": ["morning"],
+    "2025-06-03": ["afternoon"],
+  },
+  "RS Quest": {
+    "2025-05-16": ["afternoon"],
+    "2025-06-01": ["morning", "afternoon"],
+    "2025-06-05": ["morning"],
+  },
+  "RS CAT14": {
+    "2025-05-18": ["morning"],
+    "2025-06-08": ["afternoon"],
+    "2025-06-15": ["morning", "afternoon"],
+  },
 };
 
 export default function RentalsPage() {
@@ -33,6 +48,7 @@ export default function RentalsPage() {
     surname: "",
     tessera: "",
     email: "",
+    timeSlot: "",
   });
 
   const boats = ["RS Zest", "RS Quest", "RS CAT14"];
@@ -52,12 +68,22 @@ export default function RentalsPage() {
     navigate("/");
   };
 
-  const isBooked = (date: Date) =>
-    selectedBoat &&
-    mockBookedDates[selectedBoat]?.includes(format(date, "yyyy-MM-dd"));
+  const getBookingsForDate = (date: Date): ("morning" | "afternoon")[] => {
+    const dateStr = format(date, "yyyy-MM-dd");
+    return selectedBoat && mockBookedDates[selectedBoat]?.[dateStr]
+      ? mockBookedDates[selectedBoat][dateStr]
+      : [];
+  };
 
-  const isAvailable = (date: Date) =>
-    selectedBoat && !isBooked(date) && !isBefore(date, today);
+  const isFullyBooked = (date: Date): boolean => {
+    const bookings = getBookingsForDate(date);
+    return bookings.includes("morning") && bookings.includes("afternoon");
+  };
+
+  const isPartiallyAvailable = (date: Date): boolean => {
+    const bookings = getBookingsForDate(date);
+    return bookings.length < 2 && isAfter(date, today);
+  };
 
   const renderCalendar = () => {
     const monthStart = startOfMonth(currentMonth);
@@ -105,8 +131,8 @@ export default function RentalsPage() {
         <div className="grid grid-cols-7 text-center gap-1 text-sm">
           {days.map((date) => {
             const dateStr = format(date, "yyyy-MM-dd");
-            const isDateBooked = isBooked(date);
-            const isDateAvailable = isAvailable(date);
+            const isDateBooked = isFullyBooked(date);
+            const isDateAvailable = isPartiallyAvailable(date);
             const isCurrentMonth = isSameMonth(date, currentMonth);
             const isToday = isSameDay(date, today);
 
@@ -172,6 +198,43 @@ export default function RentalsPage() {
 
       {/* Calendar */}
       {selectedBoat && <div className="mb-12">{renderCalendar()}</div>}
+
+      {formData.date && (
+        <div>
+          <label className="block font-medium mb-1">
+            Fascia oraria disponibile
+          </label>
+          <div className="flex gap-4">
+            {["morning", "afternoon"].map((slot) => {
+              const bookedSlots = getBookingsForDate(new Date(formData.date));
+              const disabled = bookedSlots.includes(
+                slot as "morning" | "afternoon"
+              );
+
+              return (
+                <label
+                  key={slot}
+                  className={`flex items-center gap-2 ${
+                    disabled ? "text-gray-400" : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="timeSlot"
+                    value={slot}
+                    disabled={disabled}
+                    checked={formData.timeSlot === slot}
+                    onChange={(e) =>
+                      setFormData({ ...formData, timeSlot: e.target.value })
+                    }
+                  />
+                  {slot === "morning" ? "Mattina" : "Pomeriggio"}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Rental Form */}
       {selectedBoat && (
@@ -262,7 +325,7 @@ export default function RentalsPage() {
           <div className="text-center pt-4">
             <button
               type="submit"
-              disabled={!formData.date}
+              disabled={!formData.date || !formData.timeSlot}
               className="bg-blue-800 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-full transition disabled:opacity-50"
             >
               Prenota
