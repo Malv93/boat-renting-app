@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   format,
@@ -10,11 +10,11 @@ import {
   endOfWeek,
   addDays,
   isSameMonth,
-  isSameDay,
   isAfter,
   isBefore,
 } from "date-fns";
 import { it } from "date-fns/locale";
+import { loadExcelData, type BookingsByBoat } from "../db/localSpreadsheet";
 
 // Mock data: booked dates by boat
 const mockBookedDates: Record<
@@ -51,6 +51,18 @@ export default function RentalsPage() {
     email: "",
     timeSlot: "",
   });
+  const [bookings, setBookings] = useState<BookingsByBoat>({});
+
+    useEffect(() => {
+    loadExcelData()
+      .then((json) => {
+        setBookings(json);
+        console.log("Loaded Excel Data:", json);
+      })
+      .catch((err) => {
+        console.error("Error loading Excel:", err);
+      });
+  }, []);
 
   const boats = ["RS Zest", "RS Quest", "RS CAT14"];
 
@@ -71,8 +83,8 @@ export default function RentalsPage() {
 
   const getBookingsForDate = (date: Date): ("morning" | "afternoon")[] => {
     const dateStr = format(date, "yyyy-MM-dd");
-    return selectedBoat && mockBookedDates[selectedBoat]?.[dateStr]
-      ? mockBookedDates[selectedBoat][dateStr]
+    return selectedBoat && bookings[selectedBoat]?.[dateStr]
+      ? bookings[selectedBoat][dateStr]
       : [];
   };
 
