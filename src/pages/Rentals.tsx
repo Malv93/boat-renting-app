@@ -12,6 +12,7 @@ import {
   isSameMonth,
   isSameDay,
   isAfter,
+  isBefore,
 } from "date-fns";
 import { it } from "date-fns/locale";
 
@@ -134,34 +135,31 @@ export default function RentalsPage() {
             const isDateBooked = isFullyBooked(date);
             const isDateAvailable = isPartiallyAvailable(date);
             const isCurrentMonth = isSameMonth(date, currentMonth);
-            const isToday = isSameDay(date, today);
+            const isInThePast = isBefore(date, today);
 
             return (
               <button
                 key={dateStr}
                 type="button"
-                disabled={!isCurrentMonth || !isDateAvailable}
+                disabled={!isCurrentMonth || !isDateAvailable || isInThePast}
                 onClick={() =>
                   setFormData((prev) => ({ ...prev, date: dateStr }))
                 }
                 className={`py-2 border rounded transition text-xs
-                  ${!isCurrentMonth ? "text-gray-400" : ""}
+                  ${!isCurrentMonth || isInThePast ? "text-gray-400" : ""}
                   ${
-                    isDateBooked
+                    isDateBooked && isCurrentMonth
                       ? "bg-red-100 text-red-700 cursor-not-allowed"
                       : ""
                   }
                   ${
-                    isDateAvailable
+                    isDateAvailable && isCurrentMonth
                       ? "bg-green-100 hover:bg-green-200 text-green-700"
                       : ""
                   }
                   ${formData.date === dateStr ? "ring-2 ring-blue-600" : ""}`}
               >
                 {format(date, "d")}
-                {isToday && (
-                  <div className="text-[10px] text-blue-500">oggi</div>
-                )}
               </button>
             );
           })}
