@@ -24,7 +24,7 @@ export default function Navbar() {
             className="h-10 w-auto"
           />
           <span className="text-xl font-semibold text-blue-900">
-            Lega Navale Italiana
+            Boat Renting App
           </span>
         </Link>
 

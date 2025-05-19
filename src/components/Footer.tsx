@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-blue-900">
         {/* About */}
         <div>
-          <h4 className="text-lg font-semibold mb-3">Lega Navale Italiana</h4>
+          <h4 className="text-lg font-semibold mb-3">Boat Renting App</h4>
           <p className="text-sm leading-relaxed">
             Promuoviamo la cultura del mare e offriamo servizi di noleggio
             barche per i nostri soci.
