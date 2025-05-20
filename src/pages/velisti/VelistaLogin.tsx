@@ -1,21 +1,30 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router";
-// import pb from "../../lib/pocketbase";
-// import { getErrorMessage } from "../../utils/errors";
+import { useNavigate } from "react-router";
+import pb from "../../lib/pocketbase";
+import { getErrorMessage } from "../../utils/errors";
 
 const VelistaLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
-    alert("login to velista home...");
-    // try {
-    //   await pb.collection("velisti_users").authWithPassword(email, password);
-    //   navigate("/home-velista");
-    // } catch (err) {
-    //   alert("Login failed: " + getErrorMessage(err));
-    // }
+    try {
+      const authData = await pb
+        .collection("users")
+        .authWithPassword(email, password);
+
+      const user = authData.record;
+      navigate(`/user-profile/${user.id}`, {
+        state: {
+          email: user.email,
+          avatar: pb.files.getURL(user, user.avatar),
+          name: user.name,
+        },
+      });
+    } catch (err) {
+      alert("Login failed: " + getErrorMessage(err));
+    }
   };
 
   return (

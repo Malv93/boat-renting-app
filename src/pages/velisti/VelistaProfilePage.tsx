@@ -1,4 +1,8 @@
+import { useLocation, useParams } from "react-router";
 import VelistaProfile from "../../components/VelistaProfile";
+import { useEffect, useState } from "react";
+import pb from "../../lib/pocketbase";
+import type { RecordModel } from "pocketbase";
 
 const mockUser = {
   name: "Luca",
@@ -14,8 +18,44 @@ const mockUser = {
   yearsOfExperience: 12
 };
 
+// const VelistaProfilePage = () => {
+//   return <VelistaProfile user={mockUser} />;
+// };
+
 const VelistaProfilePage = () => {
-  return <VelistaProfile user={mockUser} />;
+  const { id } = useParams();
+  const location = useLocation();
+
+  const [profile, setProfile] = useState<RecordModel | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await pb.collection("users").getOne(id || "");
+      setProfile(data);
+    };
+
+    fetchUser();
+  }, [id]);
+
+  if (!profile) return <p>Loading...</p>;
+
+  return (
+    <VelistaProfile
+      user={{
+        name: profile.name,
+        surname: profile.surname,
+        dateOfBirth: profile.date_of_birth,
+        address: profile.address,
+        avatarUrl: location.state?.avatar || "", // fallback to avatar from state
+        experienceDescription: profile.experience,
+        coursesCompleted: profile.courses_completed || [],
+        coursesInProgress: profile.courses_in_progress || [],
+        allowedBoats: profile.allowed_boats || [],
+        licenses: profile.licenses || [],
+        yearsOfExperience: profile.years_experience || 0,
+      }}
+    />
+  );
 };
 
 export default VelistaProfilePage;
