@@ -5,8 +5,8 @@ import {Link} from "react-router"
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Chi siamo", href: "/about" },
-  { name: "Barche", href: "/boats" },
-  { name: "Prenotazioni", href: "/rentals" },
+  // { name: "Barche", href: "/boats" },
+  // { name: "Prenotazioni", href: "/rentals" },
   { name: "Contatti", href: "/contact" },
 ];
 

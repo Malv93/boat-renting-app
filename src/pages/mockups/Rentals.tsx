@@ -14,29 +14,29 @@ import {
   isBefore,
 } from "date-fns";
 import { it } from "date-fns/locale";
-import { loadExcelData, type BookingsByBoat } from "../db/localSpreadsheet";
+import { loadExcelData, type BookingsByBoat } from "../../db/localSpreadsheet";
 
 // Mock data: booked dates by boat
-const mockBookedDates: Record<
-  string,
-  Record<string, ("morning" | "afternoon")[]>
-> = {
-  "RS Zest": {
-    "2025-05-15": ["morning", "afternoon"],
-    "2025-05-20": ["morning"],
-    "2025-06-03": ["afternoon"],
-  },
-  "RS Quest": {
-    "2025-05-16": ["afternoon"],
-    "2025-06-01": ["morning", "afternoon"],
-    "2025-06-05": ["morning"],
-  },
-  "RS CAT14": {
-    "2025-05-18": ["morning"],
-    "2025-06-08": ["afternoon"],
-    "2025-06-15": ["morning", "afternoon"],
-  },
-};
+// const mockBookedDates: Record<
+//   string,
+//   Record<string, ("morning" | "afternoon")[]>
+// > = {
+//   "RS Zest": {
+//     "2025-05-15": ["morning", "afternoon"],
+//     "2025-05-20": ["morning"],
+//     "2025-06-03": ["afternoon"],
+//   },
+//   "RS Quest": {
+//     "2025-05-16": ["afternoon"],
+//     "2025-06-01": ["morning", "afternoon"],
+//     "2025-06-05": ["morning"],
+//   },
+//   "RS CAT14": {
+//     "2025-05-18": ["morning"],
+//     "2025-06-08": ["afternoon"],
+//     "2025-06-15": ["morning", "afternoon"],
+//   },
+// };
 
 export default function RentalsPage() {
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ export default function RentalsPage() {
   });
   const [bookings, setBookings] = useState<BookingsByBoat>({});
 
-    useEffect(() => {
+  useEffect(() => {
     loadExcelData()
       .then((json) => {
         setBookings(json);

@@ -1,20 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import pb from "../lib/pocketbase";
-import { getErrorMessage } from "../utils/errors";
+// import { useNavigate } from "react-router";
+// import pb from "../../lib/pocketbase";
+import { getErrorMessage } from "../../utils/errors";
 
 const CentroVelicoLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-        alert("login to centro velico home...")
-    //   await pb
-    //     .collection("centri_velici_users")
-    //     .authWithPassword(email, password);
-    //   navigate("/home-centro-velico");
+      alert("login to centro velico home...");
+      //   await pb
+      //     .collection("centri_velici_users")
+      //     .authWithPassword(email, password);
+      //   navigate("/home-centro-velico");
     } catch (err) {
       alert("Login failed: " + getErrorMessage(err));
     }
