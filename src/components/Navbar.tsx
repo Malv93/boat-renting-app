@@ -8,6 +8,8 @@ const navLinks = [
   // { name: "Barche", href: "/boats" },
   // { name: "Prenotazioni", href: "/rentals" },
   { name: "Contatti", href: "/contact" },
+  { name: "Prenota", href: "/user-booking" },
+  { name: "Profilo", href: "/user-profile" },
 ];
 
 export default function Navbar() {

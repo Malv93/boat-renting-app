@@ -7,6 +7,8 @@ import Footer from "./components/Footer.tsx";
 import Home from "./pages/Home.tsx";
 import CentroVelicoLogin from "./pages/centri-velici/CentroVelicoLogin.tsx";
 import VelistaLogin from "./pages/velisti/VelistaLogin.tsx";
+import VelistaProfilePage from "./pages/velisti/VelistaProfilePage.tsx";
+import VelistaBookingPage from "./pages/velisti/VelistaBookingPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,6 +18,8 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/" element={<Home />} />
         <Route path="/login-centro-velico" element={<CentroVelicoLogin />} />
         <Route path="/login-velista" element={<VelistaLogin />} />
+        <Route path="/user-profile" element={<VelistaProfilePage />} />
+        <Route path="/user-booking" element={<VelistaBookingPage />} />
         {/* <Route path="/home-centro-velico" element={<CentriVeliciHome />} />
         <Route path="/home-velista" element={<VelistiHome />} /> */}
         {/* <Route
